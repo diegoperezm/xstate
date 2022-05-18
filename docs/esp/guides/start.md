@@ -115,7 +115,7 @@ const promiseService = interpret(promiseMachine).onTransition((state) =>
 promiseService.start();
 // => 'pending'
 
-promiseService.send({ tipo: 'RESOLVE' });
+promiseService.send({ type: 'RESOLVE' });
 // => 'resolved'
 ```
 
