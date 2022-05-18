@@ -12,18 +12,19 @@ npm install xstate --save
 
 Luego, en tu proyecto, importa `createMachine`, que es una función que crea una máquina de estado.
 
-``js
+```js
 import { createMachine } from 'xstate';
 
 const promiseMachine = createMachine(/* ... */);
 ```
+
 Pasaremos la [configuración de la máquina](./machines.md#configuration) a `createMachine`. Tendremos que proporcionar el:
 
 - `id` - para identificar la máquina
 - `initial` - para especificar el nodo de estado inicial en el que debe estar la máquina
 - `states` - para definir cada uno de los estados hijos:
 
-``js
+```js
 import { createMachine } from 'xstate';
 
 const promiseMachine = createMachine({
@@ -60,7 +61,7 @@ const promiseMachine = createMachine({
 
 También tendremos que marcar los nodos de estado `resolved` y `rejected` como [nodos de estado final](./final.md) ya que la máquina promise termina de ejecutarse una vez que alcanza esos estados:
 
-``js
+```js
 import { createMachine } from 'xstate';
 
 const promiseMachine = createMachine({
@@ -99,7 +100,7 @@ La forma de ejecutar nuestra máquina depende de dónde pensemos utilizarla.
 
 Para [interpretar](./interpretation.md) la máquina y hacerla andar, necesitamos añadir un intérprete. Esto crea un servicio:
 
-``js
+```js
 import { createMachine, interpret } from 'xstate';
 
 const promiseMachine = createMachine({
