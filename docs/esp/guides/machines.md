@@ -1,28 +1,30 @@
-# Machines
+# Máquinas
 
-A state machine is a finite set of states that can transition to each other deterministically due to events. To learn more, read our [introduction to statecharts](./introduction-to-state-machines-and-statecharts/index.md).
+Una máquina de estado es un conjunto finito de estados que pueden transitar de  unos a otros de forma determinista como consecuencia de  eventos. Para conocer más, lea nuestra [introducción a statecharts](./introduction-to-state-machines-and-statecharts/index.md).
 
-## Configuration
 
-State machines and statecharts alike are defined using the `createMachine()` factory function:
+## Configuración
+
+Las máquinas de estado y statecharts se definen usando la factory function `createMachine()`:
+
 
 ```js
 import { createMachine } from 'xstate';
 
 const lightMachine = createMachine({
-  // Machine identifier
+  // Identificador de la máquina 
   id: 'light',
 
   // Initial state
   initial: 'green',
 
-  // Local context for entire machine
+  // Contexto local para toda la máquina 
   context: {
     elapsed: 0,
     direction: 'east'
   },
 
-  // State definitions
+  // Definiciones de estados 
   states: {
     green: {
       /* ... */
@@ -37,13 +39,14 @@ const lightMachine = createMachine({
 });
 ```
 
-The machine config is the same as the [state node config](./statenodes.md), with the addition of the context property:
+La configuración de la máquina es la misma que la [configuración del nodo de estado](./statenodes.md), con la adición de la propiedad context:
 
-- `context` - represents the local "extended state" for all of the machine's nested states. See [the docs for context](./context.md) for more details.
+- `context` - representa el "estado extendido" para todos los estados anidados de la máquina. Consulte  [la documentación de context](./context.md) para más detalles.
 
 ## Options
 
-Implementations for [actions](./actions.md), [delays](./delays.md), [guards](./guards.md), and [services](./communication.md) can be referenced in the machine config as a string, and then specified as an object in the 2nd argument to `createMachine()`:
+Las implementaciones de  [actions](./actions.md), [delays](./delays.md), [guards](./guards.md), y [services](./communication.md) pueden ser identificadas en la configuración de la máquina usando un string, y luego ser especificadas como un objeto en el segundo argumento de  `createMachine()`: 
+
 
 ```js
 const lightMachine = createMachine(
@@ -52,14 +55,14 @@ const lightMachine = createMachine(
     initial: 'green',
     states: {
       green: {
-        // action referenced via string
+        // action identificación usando un  string
         entry: 'alertGreen'
       }
     }
   },
   {
     actions: {
-      // action implementation
+      // action implementación
       alertGreen: (context, event) => {
         alert('Green!');
       }
@@ -77,20 +80,22 @@ const lightMachine = createMachine(
 );
 ```
 
-This object has 5 optional properties:
+Este objecto tiene 5 propiedades opcionales:
 
-- `actions` - the mapping of action names to their implementation
-- `delays` - the mapping of delay names to their implementation
-- `guards` - the mapping of transition guard (`cond`) names to their implementation
-- `services` - the mapping of invoked service (`src`) names to their implementation
-- `activities` (deprecated) - the mapping of activity names to their implementation
+- `actions` - el mapeo de los nombres de  action a su implementación 
+- `delays`  - el mapeo de los nombres de  delay a su implementación 
+- `guards`  - el mapeo de los nombres de  transition guard (`cond`) a su implementación 
+- `services` - el mapeo de los nombres de invoked service (`src`) a su implementación
+- `activities` (deprecated) - el mapeo de los nombres de activity a su implementación 
 
-## Extending Machines
 
-Existing machines can be extended using `.withConfig()`, which takes the same object structure as above:
+
+## Extendiendo  Máquinas
+
+Las máquinas existentes se pueden extender usando `.withConfig()`, que toma la misma estructura del objeto anterior: 
 
 ```js
-const lightMachine = // (same as above example)
+const lightMachine = // (igual que el ejemplo anterior)
 
 const noAlertLightMachine = lightMachine.withConfig({
   actions: {
@@ -101,12 +106,12 @@ const noAlertLightMachine = lightMachine.withConfig({
 });
 ```
 
-## Initial Context
+## Context Inicial
 
-As shown in the first example, the `context` is defined directly in the configuration itself. If you want to extend an existing machine with a different initial `context`, you can use `.withContext()` and pass in the custom `context`:
+Como se muestra en el primer ejemplo, el `context` es definido directamente en la propia configuración. Si quieres extender una máquina existente con un `context` inicial diferente, puedes usar `.withContext()` y pasar el `context` personalizado: 
 
 ```js
-const lightMachine = // (same as first example)
+const lightMachine = // (igual que el ejemplo anterior)
 
 const testLightMachine = lightMachine.withContext({
   elapsed: 1000,
@@ -114,15 +119,17 @@ const testLightMachine = lightMachine.withContext({
 });
 ```
 
-::: warning
-This will _not_ do a shallow merge of the original `context`, and will instead _replace_ the original `context` with the `context` provided to `.withContext(...)`. You can still "merge" contexts manually, by referencing `machine.context`:
+::: advertencia
+Esto _no_ hará un shallow merge del `context` original, y en su lugar _reemplazará_ el `context` original con el `context` proporcionado a `.withContext(..)`. Puedes "fusionar" el `context` manualmente, haciendo referencia a `machine.context`:
+
 
 ```js
 const testLightMachine = lightMachine.withContext({
-  // merge with original context
+  // fusionar con el context original
   ...lightMachine.context,
   elapsed: 1000
 });
 ```
 
 :::
+
