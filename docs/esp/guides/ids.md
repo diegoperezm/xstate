@@ -1,8 +1,8 @@
-# Identifying State Nodes
+# Identificando Nodos De Estado 
 
 [:rocket: Quick Reference](#quick-reference)
 
-By default, a state node's `id` is its delimited full path. You can use this default `id` to specify a state node:
+Por defecto, el `id` de un nodo de estado es su ruta completa delimitada. Puedes usar este `id` por defecto para especificar un nodo de estado: 
 
 ```js
 const lightMachine = createMachine({
@@ -10,10 +10,10 @@ const lightMachine = createMachine({
   initial: 'green',
   states: {
     green: {
-      // default ID: 'light.green'
+      // ID por defecto: 'light.green'
       on: {
-        // You can target state nodes by their default ID.
-        // This is the same as TIMER: 'yellow'
+        // Puedes apuntar a los nodos de estado usando su ID por defecto.
+        // Esto es lo mismo que TIMER: 'yellow'
         TIMER: { target: '#light.yellow' }
       }
     },
@@ -33,7 +33,8 @@ const lightMachine = createMachine({
 
 ## Relative Targets
 
-Child state nodes can be targeted relative to their parent by specifying a dot (`'.'`) followed by their key:
+Los nodos de estado hijos pueden ser apuntados relativos a su padre especificando un punto (`'.'`) seguido por su clave: 
+
 
 ```js {10-12}
 const optionsMachine = createMachine({
@@ -45,32 +46,35 @@ const optionsMachine = createMachine({
     third: {}
   },
   on: {
-    SELECT_FIRST: { target: '.first' }, // resolves to 'options.first'
+    SELECT_FIRST: { target: '.first' }, // se resuelve a 'options.first'
     SELECT_SECOND: { target: '.second' }, // 'options.second'
     SELECT_THIRD: { target: '.third' } // 'options.third'
   }
 });
 ```
+Por defecto, los relative targets son  [transiciones internas](./transitions.md#internal-transitions),
+lo que significa que el estado padre _no_ saldrá y volverá a entrar. Puedes hacer que los relative targets sean transiciones externas especificando `internal: false`:
 
-By default, relative targets are [internal transitions](./transitions.md#internal-transitions), which means the parent state will _not_ exit and reenter. You can make relative targets external transitions by specifying `internal: false`:
 
 ```js {4}
 // ...
 on: {
   SELECT_FIRST: {
     target: { target: '.first' },
-    internal: false // external transition, will exit/reenter parent state node
+    internal: false // transición externa, saldrá/entrará del nodo de estado padre 
   }
 }
 ```
 
-## Custom IDs
+## IDs Personalizados
 
-State nodes can be targeted via unique identifiers, instead of by relative identifiers. This can simplify the creation of complex statecharts.
+Los nodos de estados pueden ser apuntados usando identificadores únicos, en lugar de identificadores relativos. Esto puede simplificar la creación de statecharts complejos.
 
-To specify an ID for a state node, provide a unique string identifier as its `id` property, e.g., `id: 'greenLight'`.
+Para especificar un ID para un nodo de estado, proporciona un string identificador único como su propiedad  `id`, e.g., `id: 'greenLight'`.
 
-To target a state node by its ID, prepend the `'#'` symbol to its string ID, e.g., `TIMER: '#greenLight'`.
+Para apuntar a un nodo de estado usando su ID, anteponga el símbolo `'#'` al string ID, e.g., `TIMER: '#greenLight'`.
+
+
 
 ```js
 const lightMachine = createMachine({
@@ -78,10 +82,10 @@ const lightMachine = createMachine({
   initial: 'green',
   states: {
     green: {
-      // custom identifier
+      // identificador personalizado
       id: 'greenLight',
       on: {
-        // target state node by its ID
+        // apunte al  nodo de estado usando su ID 
         TIMER: { target: '#yellowLight' }
       }
     },
@@ -94,7 +98,7 @@ const lightMachine = createMachine({
     red: {
       id: 'redLight',
       on: {
-        // relative targets will still work
+        // targets relativos seguirán funcionando 
         TIMER: { target: 'green' }
       }
     }
@@ -102,13 +106,15 @@ const lightMachine = createMachine({
 });
 ```
 
-**Notes:**
+**Notas:**
 
-- IDs are always recommended for the root state node.
-- Make sure that all IDs are unique in order to prevent naming conflicts. This is naturally enforced by the automatically generated IDs.
+- Siempre se recomienda usar IDs para el nodo de estado raíz.
+- Asegúrese de que todos los IDs son únicos para evitar conflictos  de nombres. Esto es naturalmente impuesto por los IDs generados automáticamente.
 
-::: warning
-Do not mix custom identifiers with relative identifiers. For example, if the `red` state node above has a custom `"redLight"` ID and a child `walking` state node, e.g.:
+
+::: advertencia
+No mezcle identificadores personalizados con identificadores relativos. Por ejemplo, si el nodo de estado `red` tiene un identificador personalizado `"redLight"` y un nodo de estado hijo `walking`, e.g.:
+
 
 ```js
 // ...
@@ -116,20 +122,19 @@ red: {
   id: 'redLight',
   initial: 'walking',
   states: {
-    // ID still resolves to 'light.red.walking'
+    // el ID continúa resolviéndose como 'light.red.walking'
     walking: {/* ... */},
     // ...
   }
 }
 // ...
 ```
-
-Then you cannot target the `'walking'` state via `'#redLight.walking'`, because its ID is resolved to `'#light.red.walking'`. A target that starts with `'#'` will always refer to the _exact match_ for the `'#[state node ID]'`.
+Entonces no puedes apuntar al estado `'walking'` usando `'#redLight.walking'`, porque su ID se resuelve a `'#light.red.walking'`. Un target que comienza con `'#'` siempre se referirá al _match exacto_  de `'#[state node ID]'`.
 :::
 
 ## Quick Reference
 
-**Default, automatically generated ID:**
+**Por defecto, ID generado automáticamente:**
 
 ```js
 const lightMachine = createMachine({
@@ -152,24 +157,25 @@ const lightMachine = createMachine({
 });
 ```
 
-**Custom ID**
+**ID Personalizado**
 
 ```js
 // ...
 states: {
   active: {
-    id: 'custom-active', // can be any unique string
+    id: 'custom-active', // puede ser cualquier string único 
     // ...
   }
 }
 ```
 
-**Targeting state node by ID:**
+**Apuntando a un nodo de estado por su ID:**
 
 ```js
 // ...
 on: {
-  EVENT: { target: '#light.yellow' }, // target default ID
-  ANOTHER_EVENT: { target: '#custom-id' } // target custom ID
+  EVENT: { target: '#light.yellow' }, // target ID por defecto 
+  ANOTHER_EVENT: { target: '#custom-id' } // target  ID personalizado
 }
 ```
+
